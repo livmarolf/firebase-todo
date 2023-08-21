@@ -5,13 +5,14 @@ import {
   onSnapshot,
   doc,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "./config/firebase";
 import TodoItem from "./TodoItem";
 
 export default function TodoList() {
-  const itemRef = useRef("");
   const [listItems, setListItems] = useState([]);
+  const itemRef = useRef("");
 
   // updating todo items
   useEffect(() => {
@@ -29,7 +30,6 @@ export default function TodoList() {
   // adding a todo item
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(itemRef.current.value);
 
     let data = {
       testData: itemRef.current.value,
@@ -46,6 +46,15 @@ export default function TodoList() {
     }
   };
 
+  // editing a todo item
+  const editItem = (id, value) => {
+    const docRef = doc(db, "test_data", id);
+
+    updateDoc(docRef, {
+      testData: value,
+    });
+  };
+
   // deleting a todo item
   const handleDelete = (id) => {
     deleteDoc(doc(db, "test_data", id));
@@ -57,6 +66,7 @@ export default function TodoList() {
       key={item.id}
       title={item.testData}
       handleDelete={handleDelete}
+      editItem={editItem}
       id={item.id}
     />
   ));

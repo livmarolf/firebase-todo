@@ -1,12 +1,36 @@
+import { useState } from "react";
+
 export default function TodoItem(props) {
-  function handleClick() {
-    props.handleDelete(props.id);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newValue, setNewValue] = useState(props.title);
+
+  function handleBlur() {
+    props.editItem(props.id, newValue);
+    setIsEditing(false);
   }
 
   return (
     <div>
-      <p value={props}>{props.title}</p>
-      <button onClick={handleClick}>X</button>
+      {isEditing ? (
+        <input
+          value={newValue}
+          onChange={(e) => setNewValue(e.target.value)}
+          onBlur={handleBlur}
+        />
+      ) : (
+        <p value={props}>{props.title}</p>
+      )}
+
+      <div>
+        <button
+          onClick={() => props.handleDelete(props.id)}
+          disabled={isEditing}
+        >
+          X
+        </button>
+
+        <button onClick={() => setIsEditing((p) => !p)}>edit</button>
+      </div>
     </div>
   );
 }
