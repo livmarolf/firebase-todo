@@ -1,5 +1,4 @@
 import { useRef, useEffect, useState } from "react";
-import { db } from "./config/firebase";
 import {
   collection,
   addDoc,
@@ -7,12 +6,12 @@ import {
   doc,
   deleteDoc,
 } from "firebase/firestore";
+import { db } from "./config/firebase";
 import TodoItem from "./TodoItem";
 
 export default function TodoList() {
   const itemRef = useRef("");
   const [listItems, setListItems] = useState([]);
-  console.log("listItems: ", listItems);
 
   // updating todo items
   useEffect(() => {
@@ -21,7 +20,6 @@ export default function TodoList() {
         id: doc.id,
         ...doc.data(),
       }));
-      console.log(newData);
       setListItems(newData);
     });
 
@@ -50,8 +48,6 @@ export default function TodoList() {
 
   // deleting a todo item
   const handleDelete = (id) => {
-    console.log(id);
-    console.log("ran");
     deleteDoc(doc(db, "test_data", id));
   };
 
