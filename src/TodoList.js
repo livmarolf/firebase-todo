@@ -1,19 +1,28 @@
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { db } from "./config/firebase";
-import { collection, addDoc } from "firebase/firestore";
-// import Item from "./Item";
+import { collection, addDoc, onSnapshot } from "firebase/firestore";
+import TodoItem from "./TodoItem";
 
 export default function TodoList() {
   const itemRef = useRef("");
-  // get items
-  // const items = [
-  //   {
-  //     id: 1,
-  //     title: "get laundry",
-  //   },
-  // ];
+  const [listItems, setListItems] = useState([]);
+  console.log("listItems: ", listItems);
 
-  // create todo item
+  // updating todo items
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "test_data"), (snapshot) => {
+      const newData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      console.log(newData);
+      setListItems(newData);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // adding a todo item
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(itemRef.current.value);
@@ -30,19 +39,17 @@ export default function TodoList() {
   };
 
   // render items
-  // const listItems = items.map((item) => (
-  //   <Item key={item.id} title={item.title} />
-  // ));
+  const items = listItems.map((item) => (
+    <TodoItem key={item.id} title={item.testData} />
+  ));
 
   return (
     <div>
-      <h1>Hello from todo list</h1>
-
       <form onSubmit={handleSubmit}>
         <input type="text" ref={itemRef} />
         <button type="submit">add</button>
       </form>
-      {/* <div>{listItems}</div> */}
+      <div>{items}</div>
     </div>
   );
 }
