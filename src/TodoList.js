@@ -1,6 +1,12 @@
 import { useRef, useEffect, useState } from "react";
 import { db } from "./config/firebase";
-import { collection, addDoc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 import TodoItem from "./TodoItem";
 
 export default function TodoList() {
@@ -36,11 +42,27 @@ export default function TodoList() {
     } catch (err) {
       console.log("Problem submitting: ", err);
     }
+
+    if (itemRef.current) {
+      itemRef.current.value = "";
+    }
+  };
+
+  // deleting a todo item
+  const handleDelete = (id) => {
+    console.log(id);
+    console.log("ran");
+    deleteDoc(doc(db, "test_data", id));
   };
 
   // render items
   const items = listItems.map((item) => (
-    <TodoItem key={item.id} title={item.testData} />
+    <TodoItem
+      key={item.id}
+      title={item.testData}
+      handleDelete={handleDelete}
+      id={item.id}
+    />
   ));
 
   return (
