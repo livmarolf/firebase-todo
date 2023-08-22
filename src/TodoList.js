@@ -28,7 +28,7 @@ export default function TodoList() {
   }, []);
 
   // adding a todo item
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     let data = {
@@ -36,7 +36,8 @@ export default function TodoList() {
     };
 
     try {
-      addDoc(collection(db, "test_data"), data);
+      await addDoc(collection(db, "test_data"), data);
+      console.log("Data submitted successfully");
     } catch (err) {
       console.log("Problem submitting: ", err);
     }
